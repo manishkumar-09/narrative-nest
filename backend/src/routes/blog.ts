@@ -17,18 +17,23 @@ export const blogRouter = new Hono<{
 
 blogRouter.use("/*", async (c, next) => {
   const authHeader = c.req.header("authorization") || "";
-  const token = authHeader?.split(" ")[1];
-  if (!token) {
-    c.status(401);
-    return c.json({ message: "Unauthorized" });
+  try {
+    const token = authHeader?.split(" ")[1];
+    if (!token) {
+      c.status(401);
+      return c.json({ message: "Unauthorized" });
+    }
+    const payload = await verify(token, c.env.JWT_SECRET);
+    if (!payload) {
+      c.status(403);
+      return c.json({ message: "Unauthorized" });
+    }
+    c.set("userId", payload.Id);
+    await next();
+  } catch (err) {
+    c.status(411);
+    return c.json({ message: "User not logged in" });
   }
-  const payload = await verify(token, c.env.JWT_SECRET);
-  if (!payload) {
-    c.status(403);
-    return c.json({ message: "Unauthorized" });
-  }
-  c.set("userId", payload.Id);
-  await next();
 });
 
 // adding or creating blog
