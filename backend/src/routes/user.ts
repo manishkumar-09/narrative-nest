@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
+import { signupInput } from "@manish_dev/narrative-common";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -20,6 +21,11 @@ userRouter.post("/signup", async (c) => {
 
   try {
     const body = await c.req.json();
+    const { success } = signupInput.safeParse(body);
+    if (!success) {
+      c.status(411);
+      c.json({ message: "Inputs not correct" });
+    }
     const user = await prisma.user.findUnique({ where: { email: body.email } });
     if (user)
       return c.json({ success: false, message: "Email already registerd" });

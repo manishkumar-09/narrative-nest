@@ -107,9 +107,7 @@ blogRouter.put("/:id", async (c) => {
       where: {
         id: id,
       },
-      data: {
-        content: body.content,
-      },
+      data: body,
     });
     return c.json({ message: "Blog added", blog: blog });
   } catch (err) {
