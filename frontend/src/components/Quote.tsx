@@ -7,7 +7,7 @@ export const Quote = () => {
           sustain you whether you’re inspired or not."
         </div>
         <div className="pt-2 font-semibold text-lg">Octavia Butler</div>
-        <div className="">writer | anonymous</div>
+        <div className="bg-slate-200">writer | anonymous</div>
       </div>
     </div>
   );
