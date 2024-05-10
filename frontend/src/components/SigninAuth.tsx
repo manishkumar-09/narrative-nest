@@ -7,7 +7,7 @@ import axios from "axios";
 import { BackendUrl } from "../config";
 import { useNavigate } from "react-router-dom";
 
-export const SignupAuth = () => {
+export const SigninAuth = () => {
   const navigate = useNavigate();
   const [userInput, setUserInput] = useState<SignupInput>({
     name: "",
@@ -16,9 +16,13 @@ export const SignupAuth = () => {
   });
   async function sendRequest() {
     try {
-      await axios.post(`${BackendUrl}/api/v1/user/signup`, userInput);
-      alert("sign success");
-      navigate("/signin");
+      const response = await axios.post(
+        `${BackendUrl}/api/v1/user/signin`,
+        userInput
+      );
+      if (response.data.token) {
+        navigate("/blogs");
+      }
     } catch (err) {
       alert("Error occured please try again");
     }
@@ -26,18 +30,7 @@ export const SignupAuth = () => {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="w-full max-w-sm p-4 dark:bg-gray-800 dark:border-gray-700">
-        <AuthHeader type={"signup"} />
-
-        <LabelledInput
-          label={"Full name"}
-          placeholder={"Full name"}
-          onChange={(e) => {
-            setUserInput((c) => ({
-              ...c,
-              name: e.target.value,
-            }));
-          }}
-        />
+        <AuthHeader type={"signin"} />
 
         <LabelledInput
           label={"Email"}
@@ -60,7 +53,7 @@ export const SignupAuth = () => {
             }));
           }}
         />
-        <Button type={"signup"} onpress={sendRequest} />
+        <Button type={"signin"} onpress={sendRequest} />
       </div>
     </div>
   );

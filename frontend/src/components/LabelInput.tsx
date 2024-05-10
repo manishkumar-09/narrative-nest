@@ -1,5 +1,4 @@
-import { ChangeEvent, useState } from "react";
-import { SignupInput } from "@manish_dev/narrative-common";
+import { ChangeEvent } from "react";
 
 interface LabelledInputType {
   label: string;
