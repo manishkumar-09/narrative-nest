@@ -4,7 +4,7 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
 import { userRouter } from "./routes/user";
 import { blogRouter } from "./routes/blog";
-
+import { cors } from "hono/cors";
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -13,29 +13,9 @@ const app = new Hono<{
 }>();
 
 // routes structure
-
+app.use("/*", cors());
 app.route("/api/v1/user", userRouter);
 app.route("/api/v1/blog", blogRouter);
-
-//token auth middleware
-
-// app.use(async (c, next) => {
-//   const header = c.req.header("authorization") || "";
-//   if (header && header.startsWith("Bearer")) {
-//     const token = header.split(" ")[1];
-//     const payload = await verify(token, "missisipi");
-//     console.log(payload.userId);
-//     if (!payload) {
-//       return c.json({ message: "Unauthorized" });
-//     }
-//     // Set the userId in the context
-//     // c.set("userId", payload.id);
-//     c.set("userId", payload.Id);
-//   } else {
-//     c.status(403);
-//     return c.json({ message: "token not found" });
-//   }
-// });
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
