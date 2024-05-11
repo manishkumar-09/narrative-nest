@@ -1,3 +1,3 @@
-export const Blogs = () => {
-  return <div>blogs</div>;
-};
+// export const Blogs = () => {
+//   return <div>blogs</div>;
+// };
