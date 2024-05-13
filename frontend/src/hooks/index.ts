@@ -10,7 +10,7 @@ interface Blog {
 }
 export const useBlogs = () => {
   const [loading, setLoading] = useState(true);
-  const [blogs, setBlogs] = useState(<Blog[]>[]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
     axios
@@ -26,21 +26,21 @@ export const useBlogs = () => {
   }, []);
   return { loading, blogs };
 };
-export const useBlog = () => {
+export const useBlog = ({ id }: { id: string }) => {
   const [loading, setLoading] = useState(true);
-  const [blogs, setBlogs] = useState(<Blog[]>[]);
+  const [blog, setBlog] = useState<Blog>();
 
   useEffect(() => {
     axios
-      .get(`${BackendUrl}/api/v1/blog/get-blogs`, {
+      .get(`${BackendUrl}/api/v1/blog/${id}`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
       })
       .then((response) => {
-        setBlogs(response.data.blogs);
+        setBlog(response.data.blog);
         setLoading(false);
       });
-  }, []);
-  return { loading, blogs };
+  }, [id]);
+  return { loading, blog };
 };
