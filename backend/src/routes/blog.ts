@@ -16,10 +16,13 @@ export const blogRouter = new Hono<{
 // middleware auth function
 
 blogRouter.use("/*", async (c, next) => {
-  const authHeader = c.req.header("authorization") || "";
+  const authHeader = c.req.header("Authorization") || "";
+
   try {
     const token = authHeader?.split(" ")[1];
+
     if (!token) {
+      console.log("here is error");
       c.status(401);
       return c.json({ message: "Unauthorized" });
     }
@@ -31,8 +34,9 @@ blogRouter.use("/*", async (c, next) => {
     c.set("userId", payload.Id);
     await next();
   } catch (err) {
+    console.log(err);
     c.status(411);
-    return c.json({ message: "User not logged in" });
+    return c.json({ message: "User not logged in", error: err });
   }
 });
 
@@ -77,7 +81,7 @@ blogRouter.get("/get-blogs", async (c) => {
         },
       },
     });
-    return c.json({ message: "Blog added", blogs: blogs });
+    return c.json({ message: "Blog data fetched", blogs: blogs });
   } catch (err) {
     c.status(500);
     return c.json({ message: "error occured", err });
@@ -95,6 +99,16 @@ blogRouter.get("/:id", async (c) => {
     const blog = await prisma.post.findFirst({
       where: {
         id: id,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
     c.status(200);
