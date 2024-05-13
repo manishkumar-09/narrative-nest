@@ -30,7 +30,7 @@ export const BlogCard = ({
         </div>
         <div className="text-gray-400 pt-5">{`${Math.ceil(
           content.length / 100
-        )} minutes(s)`}</div>
+        )} min read `}</div>
       </div>
       <div className="flex justify-center items-center">
         <img
