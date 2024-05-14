@@ -55,7 +55,7 @@ blogRouter.post("/add-blog", async (c) => {
         authorId: userId,
       },
     });
-    return c.json({ message: "Blog added", blog: blog });
+    return c.json({ message: "Blog added", id: blog.id });
   } catch (err) {
     c.status(500);
     return c.json({ message: "error occured", err });
