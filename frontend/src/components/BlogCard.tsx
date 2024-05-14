@@ -19,7 +19,6 @@ export const BlogCard = ({
       <div className="flex flex-col sm:flex-row justify-around px-4 sm:px-20">
         <div className="w-full sm:w-1/2 border-b-2 border-slate-200 pb-4 pt-2">
           <div className="flex pb-1 items-center">
-            {" "}
             {/* Center content vertically */}
             <div className="text-xs">
               <Avatar name={"Max" || "U"} />

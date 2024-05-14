@@ -2,15 +2,27 @@ import axios from "axios";
 import { AppBar } from "./AppBar";
 import { BackendUrl } from "../config";
 import { ChangeEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Publish = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  function onClickHandler() {
-    axios.post(`${BackendUrl}/api/v1/blog/add-blog`, {
-      title,
-      content,
-    });
+  async function onClickHandler() {
+    axios
+      .post(
+        `${BackendUrl}/api/v1/blog/add-blog`,
+        {
+          title,
+          content,
+        },
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      )
+      .then((res) => {
+        navigate(`/blog/${res.data.id}`);
+      });
   }
   return (
     <div>

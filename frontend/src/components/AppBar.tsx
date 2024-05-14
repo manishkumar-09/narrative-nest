@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const AppBar = () => {
   return (
     <div className="border border-bg-slate-500 flex justify-between px-10 py-2">
-      <div className="">logo</div>
+      <div className="">Generic</div>
 
       <div className="flex">
         <div className="">
