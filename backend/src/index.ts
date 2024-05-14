@@ -25,9 +25,9 @@ app.delete("/delete", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const user = await prisma.user.deleteMany({
+  const user = await prisma.post.deleteMany({
     where: {
-      email: "honotest1@gmail.com",
+      id: "4c22b54a-219e-47e6-870d-fe896d0bf83a",
     },
   });
   return c.text("data deleted");

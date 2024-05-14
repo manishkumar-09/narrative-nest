@@ -20,6 +20,7 @@ export const SigninAuth = () => {
         `${BackendUrl}/api/v1/user/signin`,
         userInput
       );
+      localStorage.setItem("token", `Bearer ${response.data.token}`);
       if (response.data.token) {
         navigate("/blogs");
       }
