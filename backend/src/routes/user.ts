@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
-import { signupInput } from "@manish_dev/narrative-common";
+import { signinInput, signupInput } from "@manish_dev/narrative-common";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -21,10 +21,10 @@ userRouter.post("/signup", async (c) => {
 
   try {
     const body = await c.req.json();
-    const { success } = signupInput.safeParse(body);
-    if (!success) {
+    const { data, error } = signupInput.safeParse(body);
+    if (error) {
       c.status(411);
-      c.json({ message: "Inputs not correct" });
+      return c.json({ message: "Inputs not correct" });
     }
     const user = await prisma.user.findUnique({ where: { email: body.email } });
     if (user)
@@ -50,18 +50,27 @@ userRouter.post("/signin", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const body = await c.req.json();
-  const user = await prisma.user.findUnique({
-    where: {
-      email: body.email,
-      password: body.password,
-    },
-  });
-  if (!user) {
-    c.status(403);
-    return c.json({ message: "wrong credentials" });
+  try {
+    const body = await c.req.json();
+    const { data, error } = signinInput.safeParse(body);
+    if (error) {
+      c.status(411);
+      return c.json({ message: "Inputs not correct" });
+    }
+    const user = await prisma.user.findUnique({
+      where: {
+        email: body.email,
+        password: body.password,
+      },
+    });
+    if (!user) {
+      c.status(403);
+      return c.json({ message: "wrong credentials" });
+    }
+    const token = await sign({ Id: user.id }, c.env.JWT_SECRET);
+    return c.json({ message: "singin successfull", token: token });
+  } catch (err) {
+    c.status(500);
+    return c.json({ message: `Error occured ${err}` });
   }
-
-  const token = await sign({ Id: user.id }, c.env.JWT_SECRET);
-  return c.json({ message: "singin successfull", token: token });
 });
