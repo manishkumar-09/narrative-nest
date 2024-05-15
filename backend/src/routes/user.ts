@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
 import { signinInput, signupInput } from "@manish_dev/narrative-common";
+import { hashPassword } from "../utils";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -29,12 +30,12 @@ userRouter.post("/signup", async (c) => {
     const user = await prisma.user.findUnique({ where: { email: body.email } });
     if (user)
       return c.json({ success: false, message: "Email already registerd" });
-
+    const newHashPassword = await hashPassword(body.password);
     const response = await prisma.user.create({
       data: {
         name: body.name,
         email: body.email,
-        password: body.password,
+        password: newHashPassword,
       },
     });
     return c.json({ message: "signed up success" });
