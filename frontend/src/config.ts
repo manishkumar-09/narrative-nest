@@ -1,1 +1,1 @@
-export const BackendUrl = ` https://my-app.shoppingonline2109.workers.dev`;
+export const BackendUrl = `http://localhost:8787`;
